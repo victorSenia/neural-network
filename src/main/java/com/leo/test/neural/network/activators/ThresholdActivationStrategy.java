@@ -6,7 +6,7 @@ public class ThresholdActivationStrategy implements ActivationStrategy, Serializ
 
     private static final long serialVersionUID = 1781726411565869364L;
 
-    private double threshold;
+    private final double threshold;
 
     public ThresholdActivationStrategy(double threshold) {
         this.threshold = threshold;

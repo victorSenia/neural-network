@@ -4,6 +4,10 @@ import com.leo.test.neural.training.AbstractTrainingDataGenerator;
 
 public class OrTrainingDataGenerator extends AbstractTrainingDataGenerator {
 
+    private final double[][] inputs = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+
+    private final double[][] outputs = {{0}, {1}, {1}, {1}};
+
     @Override
     public double[][] getInputs() {
         return inputs;
@@ -14,14 +18,4 @@ public class OrTrainingDataGenerator extends AbstractTrainingDataGenerator {
         return outputs;
     }
 
-    @Override
-    public int[] getInputIndices() {
-        return inputIndices;
-    }
-
-    private double[][] inputs = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
-
-    private double[][] outputs = {{0}, {1}, {1}, {1}};
-
-    private int[] inputIndices = {0, 1, 2, 3};
 }

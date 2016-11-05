@@ -1,21 +1,21 @@
 package com.leo.test.neural.training;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 public class TrainingData {
 
-    private double[][] inputs;
+    private static final Random RANDOM = new Random();
 
-    private double[][] outputs;
+    private final List<double[][]> data;
 
-    public TrainingData(double[][] inputs, double[][] outputs) {
-        this.inputs = inputs;
-        this.outputs = outputs;
+    public TrainingData(List<double[][]> data) {
+        this.data = data;
     }
 
-    public double[][] getInputs() {
-        return inputs;
-    }
-
-    public double[][] getOutputs() {
-        return outputs;
+    public List<double[][]> getData() {
+        Collections.shuffle(data, RANDOM);
+        return data;
     }
 }

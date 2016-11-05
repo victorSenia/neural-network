@@ -16,27 +16,27 @@ import com.leo.test.neural.training.implementation.XorTrainingDataGenerator;
 public class LearningNetwork extends PrintResults {
     public static void main(String... args) {
         trainSave();
-        readFromFile();
+//        readFromFile();
     }
 
-    public static void trainSave() {
+    private static void trainSave() {
         NeuralNetwork untrained;
         untrained = createUntrainedXorNeuralNetwork(new SigmoidActivationStrategy());
-        Backpropagator backpropagator = new Backpropagator(untrained, 0.1, 0.9, 0);
+        Backpropagator backpropagator = new Backpropagator(untrained);
         //                Date instant = new Date();
         backpropagator.train(new XorTrainingDataGenerator(), 0.0001);
         //                System.out.println("Train took " + (new Date().getTime() - instant.getTime()));
-        untrained.save("trained_XOR");
-        untrained = NeuralNetwork.readFromFile("trained_XOR");
+//        untrained.save("trained_XOR");
         printResults(untrained, "XOR");
-        untrained = createUntrainedOrAndNeuralNetwork(new SigmoidActivationStrategy());
-        backpropagator = new Backpropagator(untrained, 0.1, 0.9, 0);
+//        untrained = createUntrainedOrAndNeuralNetwork(new SigmoidActivationStrategy());
+//        backpropagator = new Backpropagator(untrained);
+        backpropagator.reset();
         backpropagator.train(new OrTrainingDataGenerator(), 0.0001);
-        untrained.save("trained_OR");
+//        untrained.save("trained_OR");
         printResults(untrained, "OR");
-        untrained.reset();
+        backpropagator.reset();
         backpropagator.train(new AndTrainingDataGenerator(), 0.0001);
-        untrained.save("trained_AND");
+//        untrained.save("trained_AND");
         printResults(untrained, "AND");
     }
 
@@ -53,7 +53,7 @@ public class LearningNetwork extends PrintResults {
     private static NeuralNetwork createUntrainedXorNeuralNetwork(ActivationStrategy activationStrategy) {
         NeuralNetwork xorNeuralNetwork = new NeuralNetwork("Trained XOR Network");
         createLayer(xorNeuralNetwork, activationStrategy, 2, true, true);
-        createLayer(xorNeuralNetwork, activationStrategy, 2, true, false);
+        createLayer(xorNeuralNetwork, activationStrategy, 2, false, false);
         createLayer(xorNeuralNetwork, activationStrategy, 1, false, false);
         return xorNeuralNetwork;
     }
@@ -74,11 +74,7 @@ public class LearningNetwork extends PrintResults {
             inputLayer = null;
         else
             inputLayer = network.getLayers().get(network.getLayers().size() - 1);
-        Layer layer;
-        if (hasBias)
-            layer = new Layer(inputLayer, bias);
-        else
-            layer = new Layer(inputLayer);
+        Layer layer = new Layer(inputLayer, bias);
         while (neuronQuantity-- > 0)
             layer.addNeuron(new Neuron(activationStrategy.copy()));
         network.addLayer(layer);

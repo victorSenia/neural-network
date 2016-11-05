@@ -36,44 +36,28 @@ public class NeuralNetwork implements Serializable {
         return null;
     }
 
-//    public NeuralNetwork copy() {
-//        NeuralNetwork copy = new NeuralNetwork(this.name);
-//        Layer previousLayer = null;
-//        for (Layer layer : layers) {
-//            Layer layerCopy;
-//            if (layer.hasBias()) {
-//                Neuron bias = layer.getNeurons().get(0);
-//                Neuron biasCopy = new Neuron(bias.getActivationStrategy().copy());
-//                biasCopy.setOutput(bias.getOutput());
-//                layerCopy = new Layer(previousLayer, biasCopy);
-//            } else {
-//                layerCopy = new Layer(previousLayer);
-//            }
-//            int biasCount = layerCopy.hasBias() ? 1 : 0;
-//            Neuron neuron, neuronCopy;
-//            for (int i = biasCount; i < layer.getNeurons().size(); i++) {
-//                neuron = layer.getNeurons().get(i);
-//                neuronCopy = new Neuron(neuron.getActivationStrategy().copy());
-//                neuronCopy.setOutput(neuron.getOutput());
-//                neuronCopy.setError(neuron.getError());
-//                if (neuron.getInputSynapse().size() == 0) {
-//                    layerCopy.addNeuron(neuronCopy);
-//                } else {
-//                    double[] weights = neuron.getWeights();
-//                    layerCopy.addNeuron(neuronCopy, weights);
-//                }
-//            }
-//            copy.addLayer(layerCopy);
-//            previousLayer = layerCopy;
-//        }
-//        return copy;
-//    }
+    public static NeuralNetwork copy(NeuralNetwork network) {
+        byte[] bytes = null;
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(2048);
+             ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+            outputStream.writeObject(network);
+            bytes = byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
+            return (NeuralNetwork) inputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public void addLayer(Layer layer) {
         if (layers.isEmpty())
             input = layer;
         else
-            layers.get(layers.size() - 1).setNextLayer(layer);
+            output.setNextLayer(layer);
         output = layer;
         layers.add(layer);
     }
@@ -122,46 +106,6 @@ public class NeuralNetwork implements Serializable {
             }
         }
     }
-
-//    public double[] getWeights() {
-//        List<Double> weights = new ArrayList<>();
-//        for (Layer layer : layers) {
-//            for (Neuron neuron : layer.getNeurons()) {
-//                for (Synapse synapse : neuron.getInputSynapse()) {
-//                    weights.add(synapse.getWeight());
-//                }
-//            }
-//        }
-//        return weights.stream().mapToDouble(Double::doubleValue).toArray();
-//    }
-
-//    public void copyWeightsFrom(NeuralNetwork sourceNeuralNetwork) {
-//        if (layers.size() != sourceNeuralNetwork.layers.size()) {
-//            throw new IllegalArgumentException("Cannot copy weights. Number of layers do not match (" + sourceNeuralNetwork.layers.size() + " in source versus " + layers.size() + " in destination)");
-//        }
-//        int layerId = 0;
-//        for (Layer sourceLayer : sourceNeuralNetwork.layers) {
-//            Layer destinationLayer = layers.get(layerId);
-//            if (destinationLayer.getNeurons().size() != sourceLayer.getNeurons().size()) {
-//                throw new IllegalArgumentException("Number of neurons do not match in layer " + (layerId + 1) + "(" + sourceLayer.getNeurons().size() + " in source versus " + destinationLayer.getNeurons().size() + " in destination)");
-//            }
-//            int neuronId = 0;
-//            for (Neuron sourceNeuron : sourceLayer.getNeurons()) {
-//                Neuron destinationNeuron = destinationLayer.getNeurons().get(neuronId);
-//                if (destinationNeuron.getInputSynapse().size() != sourceNeuron.getInputSynapse().size()) {
-//                    throw new IllegalArgumentException("Number of inputs to neuron " + (neuronId + 1) + " in layer " + (layerId + 1) + " do not match (" + sourceNeuron.getInputSynapse().size() + " in source versus " + destinationNeuron.getInputSynapse().size() + " in destination)");
-//                }
-//                int synapseId = 0;
-//                for (Synapse sourceSynapse : sourceNeuron.getInputSynapse()) {
-//                    Synapse destinationSynapse = destinationNeuron.getInputSynapse().get(synapseId);
-//                    destinationSynapse.setWeight(sourceSynapse.getWeight());
-//                    synapseId++;
-//                }
-//                neuronId++;
-//            }
-//            layerId++;
-//        }
-//    }
 
     public void save() {
         save(name.replaceAll(" ", "") + "-" + new Date().getTime() + ".net");

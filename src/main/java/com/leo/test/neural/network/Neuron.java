@@ -47,18 +47,6 @@ public class Neuron implements Serializable {
         return this.inputSynapse;
     }
 
-    public double[] getWeights() {
-        double[] weights = new double[inputSynapse.size()];
-
-        int i = 0;
-        for (Synapse synapse : inputSynapse) {
-            weights[i] = synapse.getWeight();
-            i++;
-        }
-
-        return weights;
-    }
-
     private void calculateWeightedSum() {
         weightedSum = 0;
         for (Synapse synapse : inputSynapse) {
@@ -82,10 +70,6 @@ public class Neuron implements Serializable {
 
     public double getDerivative() {
         return this.derivative;
-    }
-
-    public ActivationStrategy getActivationStrategy() {
-        return activationStrategy;
     }
 
     public double getError() {

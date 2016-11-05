@@ -14,14 +14,7 @@ public class XorTrainingDataGenerator extends AbstractTrainingDataGenerator {
         return outputs;
     }
 
-    @Override
-    public int[] getInputIndices() {
-        return inputIndices;
-    }
+    private final double[][] inputs = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
 
-    private double[][] inputs = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
-
-    private double[][] outputs = {{0}, {1}, {1}, {0}};
-
-    private int[] inputIndices = {0, 1, 2, 3};
+    private final double[][] outputs = {{0}, {1}, {1}, {0}};
 }

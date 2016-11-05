@@ -10,25 +10,23 @@ public class Layer implements Serializable {
 
     private final List<Neuron> neurons;
 
-    private Layer previousLayer;
+    final transient private Layer previousLayer;
 
-    private Layer nextLayer;
+    transient private Layer nextLayer;
 
-    private Neuron bias;
-
-    public Layer() {
-        neurons = new ArrayList<>();
-    }
+    private boolean hasBias;
 
     public Layer(Layer previousLayer) {
-        this();
+        neurons = new ArrayList<>();
         this.previousLayer = previousLayer;
     }
 
     public Layer(Layer previousLayer, Neuron bias) {
         this(previousLayer);
-        this.bias = bias;
-        neurons.add(bias);
+        if (bias != null) {
+            hasBias = true;
+            neurons.add(bias);
+        }
     }
 
     public List<Neuron> getNeurons() {
@@ -40,7 +38,8 @@ public class Layer implements Serializable {
         if (previousLayer != null) {
             Synapse synapse;
             for (Neuron previousLayerNeuron : previousLayer.getNeurons()) {
-                synapse = new Synapse(previousLayerNeuron, neuron, (Math.random() * 1) - 0.5);//initialize with a random weight between -1 and 1
+                //initialize with a random weight between -1 and 1
+                synapse = new Synapse(previousLayerNeuron, neuron, (Math.random() * 1) - 0.5);
                 neuron.addInput(synapse);
                 previousLayerNeuron.addOutput(synapse);
             }
@@ -65,26 +64,13 @@ public class Layer implements Serializable {
     }
 
     public void feedForward() {
-        int biasCount = hasBias() ? 1 : 0;
-        for (int i = biasCount; i < neurons.size(); i++) {
+        for (int i = hasBias ? 1 : 0; i < neurons.size(); i++) {
             neurons.get(i).activate();
         }
     }
 
-//    public Layer getPreviousLayer() {
-//        return previousLayer;
-//    }
-//
-//    void setPreviousLayer(Layer previousLayer) {
-//        this.previousLayer = previousLayer;
-//    }
-//
-//    public Layer getNextLayer() {
-//        return nextLayer;
-//    }
-
     public boolean hasBias() {
-        return bias != null;
+        return hasBias;
     }
 
     public Layer getNextLayer() {
